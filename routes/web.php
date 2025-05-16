@@ -9,7 +9,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('admin/dashboard', function () {
-        return Inertia::render('dashboard');
+        return Inertia::render('admin/dashboard');
     })->name('dashboard');
 });
 
