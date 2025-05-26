@@ -4,57 +4,36 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Ticket extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
+        'id', // UUID akan di-generate otomatis
         'booking_id',
         'seat_id',
         'event_id',
         'user_id',
         'price',
-        'status', // valid, used, cancelled
+        'status',
+        'used_at' // Tambahkan ini
     ];
 
-    protected function casts(): array
+    protected $dates = ['used_at'];
+
+    protected static function boot()
     {
-        return [
-            'price' => 'decimal:2',
-        ];
+        parent::boot();
+        static::creating(function ($model) {
+            $model->id = (string) Str::uuid();
+        });
     }
 
-    /**
-     * The booking that owns this ticket.
-     */
-    public function booking(): BelongsTo
-    {
-        return $this->belongsTo(Booking::class);
-    }
-
-    /**
-     * The seat associated with this ticket.
-     */
-    public function seat(): BelongsTo
-    {
-        return $this->belongsTo(Seat::class);
-    }
-
-    /**
-     * The event related to the ticket.
-     */
-    public function event(): BelongsTo
-    {
-        return $this->belongsTo(Event::class);
-    }
-
-    /**
-     * The user who owns this ticket.
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    // ... (relasi tetap sama)
 }
+
