@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\EventAndSeatController;
+use App\Http\Controllers\TicketingController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -19,6 +20,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('user/dashboard');
     })->name('dashboard');
 });
+
+
+// Tiket CRUD Routes
+Route::prefix('tickets')->group(function () {
+    // Get all tickets (Paginated)
+    Route::get('/', [TicketingController::class, 'index'])->name('tickets.index');
+    
+    // Get single ticket details
+    Route::get('/{ticket}', [TicketingController::class, 'show'])->name('tickets.show');
+    
+    // Create new ticket
+    Route::post('/', [TicketingController::class, 'store'])->name('tickets.store');
+    
+    // Update ticket
+    Route::put('/{ticket}', [TicketingController::class, 'update'])->name('tickets.update');
+    
+    // Delete ticket
+    Route::delete('/{ticket}', [TicketingController::class, 'delete'])->name('tickets.delete');
+});
+
+// Custom Ticket Routes
+Route::prefix('bookings')->group(function () {
+    // Generate PDF tickets for booking
+    Route::get('/{booking}/generate-tickets', [TicketingController::class, 'generate'])
+        ->name('bookings.tickets.generate');
+});
+
+// QR Validation (API Endpoint)
+Route::post('/tickets/validate-qr', [TicketingController::class, 'validateQR'])
+    ->name('tickets.validate-qr');
+
+
 
 // Event CRUD routes
 Route::get('/events', [EventAndSeatController::class, 'indexEvents']);        // List all events
