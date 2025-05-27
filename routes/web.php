@@ -67,6 +67,10 @@ Route::post('/seats', [EventAndSeatController::class, 'storeSeat']);          //
 Route::put('/seats/{id}', [EventAndSeatController::class, 'updateSeat']);     // Update seat
 Route::delete('/seats/{id}', [EventAndSeatController::class, 'deleteSeat']);  // Delete seat
 
+// Ticketing Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/ticketing', [TicketingController::class, 'index'])->name('ticketing.index');
+});
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
