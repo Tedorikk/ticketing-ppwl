@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\EventAndSeatController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\TicketingController;
 
 Route::get('/', function () {
@@ -21,6 +22,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::post('/booking/initiate', [BookingController::class, 'initiate'])->name('booking.initiate');
+});
 
 // Tiket CRUD Routes
 Route::prefix('tickets')->group(function () {
@@ -50,8 +54,6 @@ Route::prefix('bookings')->group(function () {
 // QR Validation (API Endpoint)
 Route::post('/tickets/validate-qr', [TicketingController::class, 'validateQR'])
     ->name('tickets.validate-qr');
-
-
 
 // Event CRUD routes
 Route::get('/events', [EventAndSeatController::class, 'indexEvents']);        // List all events
