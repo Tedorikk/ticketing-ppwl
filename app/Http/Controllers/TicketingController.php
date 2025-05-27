@@ -5,14 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use PDF;
 
 class TicketingController extends Controller
 {
     // CRUD Basic
-    public function index() {
-        return Ticket::with(['booking', 'user', 'event'])->paginate();
-    }
+    public function index(Request $request)
+{
+    $bookings = Booking::with(['event', 'user'])
+        ->latest()
+        ->get();
+
+    return Inertia::render('user/ticket/index', [
+        'bookings' => $bookings,
+    ]);
+}
     
     public function show(Ticket $ticket) {
         return $ticket->load(['booking', 'seat', 'event', 'user']);
