@@ -6,6 +6,8 @@ use App\Models\Event;
 use App\Models\Seat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Laravel\Sail\Console\PublishCommand;
 
 class EventAndSeatController extends Controller
 {
@@ -18,7 +20,9 @@ class EventAndSeatController extends Controller
             $query->where('status', 'available');
         }])->get();
 
-        return response()->json($events);
+        return Inertia::render('events/index', [
+            'events' => $events
+        ]);
     }
 
     /**
@@ -159,4 +163,15 @@ class EventAndSeatController extends Controller
         'event' => $event
     ], 201);
 }
+
+    public function create ()
+    {
+         return Inertia::render('events/create');
+    }
+
+    public function edit ()
+    {
+         return Inertia::render('events/edit');
+    }
 }
+
