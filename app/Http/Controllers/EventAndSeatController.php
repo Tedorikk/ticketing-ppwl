@@ -293,11 +293,11 @@ class EventAndSeatController extends Controller
 
             DB::commit();
 
-            return response()->json(['message' => 'Event and its related data deleted successfully.']);
+            return to_route('events.index')->with('success', 'Event deleted successfully.');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Failed to delete event: ' . $e->getMessage()], 500);
+            return to_route('events.index')->withErrors(['error' => 'Failed to delete event: ' . $e->getMessage()]);
         }
     }
 
