@@ -16,10 +16,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('user/dashboard');
-    })->name('dashboard');
+Route::prefix('/admin')->group(function () {
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('dashboard', [EventAndSeatController::class, 'dashboard'])->name('dashboard');
+
+        // Event routes
+        Route::get('/events', [EventAndSeatController::class, 'index'])->name('events.index');
+        Route::get('/events/{id}', [EventAndSeatController::class, 'show'])->name('events.show');
+        Route::post('/events', [EventAndSeatController::class, 'storeEvent'])->name('events.store');
+        Route::put('/events/{eventId}', [EventAndSeatController::class, 'updateEvent'])->name('events.update');
+        Route::delete('/events/{eventId}', [EventAndSeatController::class, 'deleteEvent'])->name('events.destroy');
+        
+        // Seat and booking routes
+        Route::post('/seats/{seatId}/book', [EventAndSeatController::class, 'bookSeat'])->name('seats.book');
+        Route::delete('/seats/{seatId}/cancel', [EventAndSeatController::class, 'cancelSeat'])->name('seats.cancel');
+        Route::get('/events/{eventId}/stats', [EventAndSeatController::class, 'seatStats'])->name('events.stats');
+        Route::put('/seats/{seatId}', [EventAndSeatController::class, 'updateSeat'])->name('seats.update');
+        Route::delete('/seats/{seatId}', [EventAndSeatController::class, 'deleteSeat'])->name('seats.destroy');
+
+        Route::prefix('tickets')->group(function () {
+        // Get all tickets (Paginated)
+        Route::get('/', [TicketingController::class, 'index'])->name('tickets.index');
+        
+        // Get single ticket details
+        Route::get('/{ticket}', [TicketingController::class, 'show'])->name('tickets.show');
+        
+        // Create new ticket
+        Route::post('/', [TicketingController::class, 'store'])->name('tickets.store');
+        
+        // Update ticket
+        Route::put('/{ticket}', [TicketingController::class, 'update'])->name('tickets.update');
+        
+        // Delete ticket
+        Route::delete('/{ticket}', [TicketingController::class, 'delete'])->name('tickets.delete');
+    });
+    });
 });
 
 Route::middleware('auth')->group(function () {
@@ -27,22 +58,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Tiket CRUD Routes
-Route::prefix('tickets')->group(function () {
-    // Get all tickets (Paginated)
-    Route::get('/', [TicketingController::class, 'index'])->name('tickets.index');
-    
-    // Get single ticket details
-    Route::get('/{ticket}', [TicketingController::class, 'show'])->name('tickets.show');
-    
-    // Create new ticket
-    Route::post('/', [TicketingController::class, 'store'])->name('tickets.store');
-    
-    // Update ticket
-    Route::put('/{ticket}', [TicketingController::class, 'update'])->name('tickets.update');
-    
-    // Delete ticket
-    Route::delete('/{ticket}', [TicketingController::class, 'delete'])->name('tickets.delete');
-});
+
 
 // Custom Ticket Routes
 Route::prefix('bookings')->group(function () {
@@ -54,20 +70,6 @@ Route::prefix('bookings')->group(function () {
 // QR Validation (API Endpoint)
 Route::post('/tickets/validate-qr', [TicketingController::class, 'validateQR'])
     ->name('tickets.validate-qr');
-
-// Event CRUD routes
-Route::get('/events', [EventAndSeatController::class, 'indexEvents']);        // List all events
-Route::get('/events/{id}', [EventAndSeatController::class, 'showEvent']);     // Show one event
-Route::post('/events', [EventAndSeatController::class, 'storeEvent']);        // Create new event
-Route::put('/events/{id}', [EventAndSeatController::class, 'updateEvent']);   // Update event
-Route::delete('/events/{id}', [EventAndSeatController::class, 'deleteEvent']); // Delete event
-
-// Seat CRUD routes
-Route::get('/seats', [EventAndSeatController::class, 'indexSeats']);          // List all seats
-Route::get('/seats/{id}', [EventAndSeatController::class, 'showSeat']);       // Show one seat
-Route::post('/seats', [EventAndSeatController::class, 'storeSeat']);          // Create new seat
-Route::put('/seats/{id}', [EventAndSeatController::class, 'updateSeat']);     // Update seat
-Route::delete('/seats/{id}', [EventAndSeatController::class, 'deleteSeat']);  // Delete seat
 
 // Ticketing Routes
 Route::middleware(['auth', 'verified'])->group(function () {
