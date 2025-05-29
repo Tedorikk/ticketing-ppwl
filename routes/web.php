@@ -22,7 +22,7 @@ Route::prefix('/admin')->group(function () {
 
         // Event routes
         Route::get('/events', [EventAndSeatController::class, 'index'])->name('events.index');
-        Route::get('/events/{id}', [EventAndSeatController::class, 'show'])->name('events.show');
+    Route::get('/events/{id}', [EventAndSeatController::class, 'show'])->name('events.show');
         Route::post('/events', [EventAndSeatController::class, 'storeEvent'])->name('events.store');
         Route::put('/events/{eventId}', [EventAndSeatController::class, 'updateEvent'])->name('events.update');
         Route::delete('/events/{eventId}', [EventAndSeatController::class, 'deleteEvent'])->name('events.destroy');
