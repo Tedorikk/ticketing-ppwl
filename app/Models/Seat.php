@@ -28,6 +28,7 @@ class Seat extends Model
         'special_requirements',
     ];
 
+    
     /**
      * Get the attributes that should be cast.
      *
@@ -37,7 +38,7 @@ class Seat extends Model
     {
         return [
             'price' => 'decimal:2',
-            'booking_time' => 'datetime',
+            'booking_time' => 'datetime', // mantap
         ];
     }
 
