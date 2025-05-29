@@ -112,12 +112,20 @@ export default function Show({ event }: ShowProps) {
         
         setIsBooking(true);
         try {
-            for (const seatId of selectedSeats) {
-                router.post(`/seats/${seatId}/book`, {}, {
-                    preserveState: false
-                });
-            }
-            setSelectedSeats([]);
+            // Kirim request ke BookingController untuk initiate booking
+            router.post('/bookings/initiate', {
+                event_id: event.id,
+                selected_seats: selectedSeats // Kirim array seat IDs yang dipilih
+            }, {
+                preserveState: false,
+                onSuccess: () => {
+                    // Reset selected seats setelah booking berhasil
+                    setSelectedSeats([]);
+                },
+                onError: (errors) => {
+                    console.error('Booking failed:', errors);
+                }
+            });
         } catch (error) {
             console.error('Booking failed:', error);
         } finally {

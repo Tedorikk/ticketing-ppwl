@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/booking/initiate', [BookingController::class, 'initiate'])->name('booking.initiate');
 });
 
+Route::post('/bookings/initiate', [BookingController::class, 'initiate'])->name('bookings.initiate');
+
 // Tiket CRUD Routes
 
 
