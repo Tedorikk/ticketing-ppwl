@@ -24,7 +24,6 @@ class Event extends Model
         'start_time',
         'end_time',
         'status',
-        'organizer_id',
         'max_seats',
         'price',
     ];

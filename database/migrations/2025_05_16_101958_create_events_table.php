@@ -20,7 +20,6 @@ return new class extends Migration
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->string('status');
-            $table->foreignId('organizer_id')->constrained('users');
             $table->integer('max_seats');
             $table->decimal('price', 10, 2);
             $table->timestamps();
