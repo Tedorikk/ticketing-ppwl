@@ -14,26 +14,48 @@ class Ticket extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id', // UUID akan di-generate otomatis
         'booking_id',
         'seat_id',
         'event_id',
         'user_id',
         'price',
         'status',
-        'used_at' // Tambahkan ini
+        'used_at'
     ];
 
-    protected $dates = ['used_at'];
+    protected $casts = [
+        'used_at' => 'datetime',
+        'price' => 'decimal:2'
+    ];
 
     protected static function boot()
     {
         parent::boot();
         static::creating(function ($model) {
-            $model->id = (string) Str::uuid();
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
         });
     }
 
-    // ... (relasi tetap sama)
-}
+    // Relationships
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class);
+    }
 
+    public function seat()
+    {
+        return $this->belongsTo(Seat::class);
+    }
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}

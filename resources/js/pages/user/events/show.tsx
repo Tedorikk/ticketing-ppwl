@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import AppLayout from '@/layouts/user-layout';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -111,18 +111,36 @@ export default function Show({ event }: ShowProps) {
         if (selectedSeats.length === 0) return;
         
         setIsBooking(true);
-        try {
-            for (const seatId of selectedSeats) {
-                router.post(`/seats/${seatId}/book`, {}, {
-                    preserveState: false
-                });
+        
+        // Use Inertia router with proper form data
+        router.post(`/events/${event.id}/book`, 
+            {
+                seat_ids: selectedSeats
+            }, 
+            {
+                preserveState: false,
+                preserveScroll: false,
+                onSuccess: () => {
+                    // Handle success - will be redirected automatically
+                    setSelectedSeats([]);
+                },
+                onError: (errors) => {
+                    // Handle validation or booking errors
+                    console.error('Booking failed:', errors);
+                    
+                    if (errors.error) {
+                        alert(`Booking failed: ${errors.error}`);
+                    } else if (errors.seat_ids) {
+                        alert(`Booking failed: ${errors.seat_ids}`);
+                    } else {
+                        alert('Booking failed. Please try again.');
+                    }
+                },
+                onFinish: () => {
+                    setIsBooking(false);
+                }
             }
-            setSelectedSeats([]);
-        } catch (error) {
-            console.error('Booking failed:', error);
-        } finally {
-            setIsBooking(false);
-        }
+        );
     };
 
     const getTotalPrice = () => {
@@ -159,7 +177,7 @@ export default function Show({ event }: ShowProps) {
                             </Badge>
                         </div>
                         <Link
-                            href="/admin/events"
+                            href="/events"
                             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md transition-colors"
                         >
                             Back to Events

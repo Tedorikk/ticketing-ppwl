@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Models\Event;
 use App\Models\Seat;
@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon; 
 use Inertia\Inertia;
+use App\Http\Controllers\Controller;
 
 
 class EventAndSeatController extends Controller
@@ -24,40 +25,8 @@ class EventAndSeatController extends Controller
             $query->where('status', 'available');
         }])->get();
 
-        return Inertia::render('events/index', [
+        return Inertia::render('user/events/index', [
             'events' => $events,
-        ]);
-    }
-
-    /**
-     * Show dashboard with statistics.
-     */
-    public function dashboard()
-    {
-        $totalEvents = Event::count();
-        $totalBookings = Booking::count();
-        $totalRevenue = Booking::sum('total_amount') ?? 0;
-        $totalTicketsSold = Ticket::where('status', 'sold')->count();
-        
-        $recentEvents = Event::with('organizer')
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
-            
-        $recentBookings = Booking::with(['user', 'event'])
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-
-        return Inertia::render('admin/dashboard', [
-            'stats' => [
-                'totalEvents' => $totalEvents,
-                'totalBookings' => $totalBookings,
-                'totalRevenue' => $totalRevenue,
-                'totalTicketsSold' => $totalTicketsSold,
-            ],
-            'recentEvents' => $recentEvents,
-            'recentBookings' => $recentBookings,
         ]);
     }
 
@@ -68,7 +37,7 @@ class EventAndSeatController extends Controller
     {
         $event = Event::with(['seats.user', 'organizer'])->findOrFail($id);
         
-        return Inertia::render('events/show', [
+        return Inertia::render('user/events/show', [
             'event' => $event,
         ]);
     }

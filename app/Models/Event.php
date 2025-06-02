@@ -88,4 +88,12 @@ class Event extends Model
     {
         return $this->availableSeats() <= 0;
     }
+
+    /**
+     * Get the bookings for the event.
+     */
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

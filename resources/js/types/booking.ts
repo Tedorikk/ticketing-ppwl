@@ -1,5 +1,6 @@
 import { Event } from "./event";
 import { User } from "./user";
+import { Ticket } from "./ticket";
 
 export interface Booking {
   id: number;
@@ -12,5 +13,6 @@ export interface Booking {
   updated_at?: string;
 
   user?: User;
+  tickets?: Ticket[];
   event?: Event;
 }

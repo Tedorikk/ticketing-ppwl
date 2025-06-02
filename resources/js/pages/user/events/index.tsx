@@ -1,7 +1,6 @@
-import { Head, Link, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import { Head, Link } from '@inertiajs/react';
+import AppLayout from '@/layouts/user-layout';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { type BreadcrumbItem } from '@/types';
@@ -41,9 +40,6 @@ interface IndexProps {
 
 export default function Index({ events }: IndexProps) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
     const filteredEvents = events.filter(event =>
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -80,17 +76,6 @@ export default function Index({ events }: IndexProps) {
             style: 'currency',
             currency: 'IDR'
         }).format(amount);
-    };
-
-    const handleEdit = (event: Event) => {
-        setSelectedEvent(event);
-        setShowEditModal(true);
-    };
-
-    const handleDelete = (eventId: number) => {
-        if (confirm('Are you sure you want to delete this event?')) {
-            router.delete(`/admin/events/${eventId}`);
-        }
     };
 
     return (
@@ -170,7 +155,7 @@ export default function Index({ events }: IndexProps) {
                                 {/* Action Buttons */}
                                 <div className="mt-4 flex gap-2">
                                     <Link
-                                        href={`/admin/events/${event.id}`}
+                                        href={`/events/${event.id}`}
                                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-3 rounded-md text-sm font-medium transition-colors"
                                     >
                                         View Details
